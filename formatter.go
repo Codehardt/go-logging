@@ -17,12 +17,16 @@ var now = time.Now
 func FormatterJSON(l *Logger, level string, message string, kv ...interface{}) string {
 	m := make(map[string]interface{})
 	m[l.messageKey] = message
-	m[l.levelKey] = level
-	t := now().Local()
-	if !l.localtime {
-		t = t.UTC()
+	if !l.withoutLevel {
+		m[l.levelKey] = level
 	}
-	m[l.timeKey] = t.Format(l.timeformat)
+	if !l.withoutTime {
+		t := now().Local()
+		if !l.localtime {
+			t = t.UTC()
+		}
+		m[l.timeKey] = t.Format(l.timeformat)
+	}
 	for i := 0; i < len(kv)-1; i += 2 {
 		if key, ok := kv[i].(string); ok {
 			m[key] = l.adjustValue(kv[i+1])
@@ -41,13 +45,24 @@ var kvKeyReplacer = strings.NewReplacer(":", "", "\n", "", "\"", "")
 
 // FormatterKV formats every log line with key: "value" format using strconv.Quote(...)
 func FormatterKV(l *Logger, level string, message string, kv ...interface{}) string {
-	t := now().Local()
-	if !l.localtime {
-		t = t.UTC()
+	var res string
+	if !l.withoutTime {
+		t := now().Local()
+		if !l.localtime {
+			t = t.UTC()
+		}
+		res += l.timeKey + ": " + strconv.Quote(t.Format(l.timeformat))
 	}
-	res := l.timeKey + ": " + strconv.Quote(t.Format(l.timeformat)) +
-		" " + l.levelKey + ": " + strconv.Quote(level) +
-		" " + l.messageKey + ": " + strconv.Quote(message)
+	if !l.withoutLevel {
+		if res != "" {
+			res += " "
+		}
+		res += l.levelKey + ": " + strconv.Quote(level)
+	}
+	if res != "" {
+		res += " "
+	}
+	res += l.messageKey + ": " + strconv.Quote(message)
 	for i := 0; i < len(kv)-1; i += 2 {
 		res += " "
 		if key, ok := kv[i].(string); ok {
@@ -64,11 +79,24 @@ var simpleValueReplacer = strings.NewReplacer("\"", "", "\\\"", "\"")
 
 // FormatterSimple formats every log line in a simple format %timestamp% [%level%] %message% %key-values%
 func FormatterSimple(l *Logger, level string, message string, kv ...interface{}) string {
-	t := now().Local()
-	if !l.localtime {
-		t = t.UTC()
+	var res string
+	if !l.withoutTime {
+		t := now().Local()
+		if !l.localtime {
+			t = t.UTC()
+		}
+		res += t.Format(l.timeformat)
 	}
-	res := t.Format(l.timeformat) + " [" + strings.ToUpper(level[:3]) + "] " + simpleValueReplacer.Replace(strconv.Quote(message))
+	if !l.withoutLevel {
+		if res != "" {
+			res += " "
+		}
+		res += "[" + strings.ToUpper(level[:3]) + "]"
+	}
+	if res != "" {
+		res += " "
+	}
+	res += simpleValueReplacer.Replace(strconv.Quote(message))
 	for i := 0; i < len(kv)-1; i += 2 {
 		res += " "
 		if key, ok := kv[i].(string); ok {

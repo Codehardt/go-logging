@@ -22,13 +22,14 @@ func ExampleNew_Simple_2() {
 		OptionWithTimeFormat(time.Stamp),
 		OptionWithStaticKV("hostname", "localhost"),
 		OptionWithStaticKV("ip", "127.0.0.1"),
+		OptionDisableLevel(true),
 	}
 	log := New(FormatterSimple, opts...)
 	log.Info("Hello World!")
 	log.Info("Hello \"World\" 2!", "foo", 1, "bar", true, "baz", now())
 	// Output:
-	// Apr 17 10:16:00 [INF] Hello World! IP: 127.0.0.1 HOSTNAME: localhost
-	// Apr 17 10:16:00 [INF] Hello "World" 2! IP: 127.0.0.1 HOSTNAME: localhost FOO: 1 BAR: true BAZ: Apr 17 10:16:00
+	// Apr 17 10:16:00 Hello World! IP: 127.0.0.1 HOSTNAME: localhost
+	// Apr 17 10:16:00 Hello "World" 2! IP: 127.0.0.1 HOSTNAME: localhost FOO: 1 BAR: true BAZ: Apr 17 10:16:00
 }
 
 func ExampleNew_KV() {

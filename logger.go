@@ -10,17 +10,19 @@ import (
 
 // Logger holds all logger configurations
 type Logger struct {
-	debug      bool
-	trace      bool
-	mu         mutex
-	formatter  Formatter
-	timeformat string
-	localtime  bool
-	staticKVs  []staticKV
-	timeKey    string
-	messageKey string
-	levelKey   string
-	writer     io.Writer
+	debug        bool
+	trace        bool
+	mu           mutex
+	formatter    Formatter
+	timeformat   string
+	localtime    bool
+	staticKVs    []staticKV
+	timeKey      string
+	messageKey   string
+	levelKey     string
+	withoutTime  bool
+	withoutLevel bool
+	writer       io.Writer
 }
 
 // New initializes a new logger using options to configure the logger
@@ -61,6 +63,10 @@ func (l *Logger) log(level string, message string, kv ...interface{}) (n int, er
 // Info message
 func (l *Logger) Info(message string, kv ...interface{}) (int, error) {
 	return l.log("Info", message, kv...)
+}
+
+func (l *Logger) Print(message string, kv ...interface{}) (int, error) {
+	return l.Info(message, kv...)
 }
 
 // Notice message

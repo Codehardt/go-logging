@@ -104,6 +104,20 @@ func OptionWithWriter(w io.Writer) func(l *Logger) {
 	}
 }
 
+// OptionDisableTime removes time from log lines
+func OptionDisableTime(timeOff bool) func(l *Logger) {
+	return func(l *Logger) {
+		l.withoutTime = timeOff
+	}
+}
+
+// OptionDisableLevel removes level from log lines
+func OptionDisableLevel(levelOff bool) func(l *Logger) {
+	return func(l *Logger) {
+		l.withoutLevel = levelOff
+	}
+}
+
 func (l *Logger) validateOptions() {
 	keys := make(map[string]struct{})
 	keys[l.messageKey] = struct{}{}
