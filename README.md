@@ -1,4 +1,10 @@
 # go-logging
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/Codehardt/go-logging.svg?branch=master)](https://travis-ci.org/Codehardt/go-logging)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Codehardt/go-logging)](https://goreportcard.com/report/github.com/Codehardt/go-logging)
+[![GoDoc](https://godoc.org/github.com/Codehardt/go-logging?status.svg)](https://godoc.org/github.com/Codehardt/go-logging)
+
 Advanced logger for Golang that supports multiple output formats and simple logging functions.
 
 # Simple Example
